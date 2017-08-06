@@ -23,6 +23,10 @@ public class ActivityServiceImpl implements ActivityService {
 	public List<Activity> findAll() {
 		return dao.findAll();
 	}
+	
+	public List<Activity> findByUser(Integer id) {
+		return dao.findByUser(id);
+	}
 
 	public void saveActivity(Activity activity) {
 		dao.save(activity);

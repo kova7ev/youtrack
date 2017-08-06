@@ -35,6 +35,7 @@ import com.kova7ev.youtrack.model.Activity;
 import com.kova7ev.youtrack.model.Project;
 import com.kova7ev.youtrack.model.User;
 import com.kova7ev.youtrack.model.UserProfile;
+import com.kova7ev.youtrack.model.UserProfileType;
 import com.kova7ev.youtrack.service.ActivityService;
 import com.kova7ev.youtrack.service.ProjectService;
 import com.kova7ev.youtrack.service.UserProfileService;
@@ -69,7 +70,7 @@ public class AppController {
 	/**
 	 * This method will list all existing users.
 	 */
-	@RequestMapping(value = { "/", "/list" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/list" }, method = RequestMethod.GET)
 	public String listUsers(ModelMap model) {
 
 		List<User> users = userService.findAllUsers();
@@ -177,64 +178,16 @@ public class AppController {
 	}
 
 	/**
-	 * This method will list all user projects.
-	 */
-	@RequestMapping(value = { "/userprojects" }, method = RequestMethod.GET)
-	public String listUserProjects(ModelMap model) {
-
-		List<User> users = userService.findAllUsers();
-		model.addAttribute("userprojects", users);
-		model.addAttribute("loggedinuser", getPrincipal());
-		return "userprojects";
-	}
-
-	/**
-	 * This method will provide the medium to update an existing user projects.
-	 */
-	@RequestMapping(value = { "/edit-user-projects-{id}" }, method = RequestMethod.GET)
-	public String editUserProjects(@PathVariable int id, ModelMap model) {
-		User user = userService.findById(id);
-		model.addAttribute("user", user);
-		model.addAttribute("edit", true);
-		model.addAttribute("loggedinuser", getPrincipal());
-		return "edituserprojects";
-	}
-
-	/**
-	 * This method will be	 called on form submission, handling POST request for
-	 * updating activity in database. It also validates the user input
-	 */
-	@RequestMapping(value = { "/edit-user-projects-{id}" }, method = RequestMethod.POST)
-	public String updateUserProjects(@Valid User user, BindingResult result, ModelMap model, @PathVariable int id) {
-
-		if (result.hasErrors()) {
-			return "edituserprojects";
-		}
-
-		userService.updateUser(user);
-
-//		model.addAttribute("success", "Activity: id=" + activity.getId() + ", comment= " + activity.getComment()
-//				+ ", hours= " + activity.getHours() + " updated successfully");
-//		model.addAttribute("loggedinuser", getPrincipal());
-		return "edituserprojects";
-	}
-
-//	/**
-//	 * This method will delete an activity by it's ID value.
-//	 */
-//	@RequestMapping(value = { "/delete-activity-{id}" }, method = RequestMethod.GET)
-//	public String deleteActivity(@PathVariable int id) {
-//		activityService.deleteActivityById(id);
-//		return "redirect:/activities";
-//	}
-
-	/**
 	 * This method will list all activities.
 	 */
 	@RequestMapping(value = { "/activities" }, method = RequestMethod.GET)
 	public String listActivities(ModelMap model) {
 
-		List<Activity> activities = activityService.findAll();
+		User user = userService.findBySSO(getPrincipal());
+		
+		boolean isAdmin = user.getUserProfiles().stream().anyMatch(p -> (p.getType().equals("ADMIN") || p.getType().equals("DBA")));
+		
+		List<Activity> activities =  isAdmin ? activityService.findAll() : activityService.findByUser(user.getId());
 		model.addAttribute("activities", activities);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "activities";
@@ -245,9 +198,12 @@ public class AppController {
 	 */
 	@RequestMapping(value = { "/newactivity" }, method = RequestMethod.GET)
 	public String newActivity(ModelMap model) {
+		User user = userService.findBySSO(getPrincipal());
 		Activity activity = new Activity();
-		//activity.setActivityUser(userService.findBySSO(getPrincipal()));
-				
+		activity.setActivityUser(user);
+
+		model.addAttribute("user", user);
+		model.addAttribute("userprojects", user.getUserProjects());
 		model.addAttribute("activity", activity);
 		model.addAttribute("edit", false);
 		model.addAttribute("loggedinuser", getPrincipal());
@@ -287,7 +243,7 @@ public class AppController {
 	}
 
 	/**
-	 * This method will be	 called on form submission, handling POST request for
+	 * This method will be called on form submission, handling POST request for
 	 * updating activity in database. It also validates the user input
 	 */
 	@RequestMapping(value = { "/edit-activity-{id}" }, method = RequestMethod.POST)
@@ -314,9 +270,20 @@ public class AppController {
 		return "redirect:/activities";
 	}
 
+	/**
+	 * This method will list all users projects.
+	 */
+	@RequestMapping(value = { "/", "/myprojects" }, method = RequestMethod.GET)
+	public String listUserProjects(ModelMap model) {
+
+		Set<Project> projects = userService.findBySSO(getPrincipal()).getUserProjects();
+		model.addAttribute("projects", projects);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "projects";
+	}
 	
 	/**
-	 * This method will list all activities.
+	 * This method will list all projects.
 	 */
 	@RequestMapping(value = { "/projects" }, method = RequestMethod.GET)
 	public String listProjects(ModelMap model) {
@@ -439,7 +406,7 @@ public class AppController {
 	public List<Project> initializeProjects() {
 		return projectService.findAll();
 	}
-	
+
 	/**
 	 * This method will provide Users list to views
 	 */
@@ -466,7 +433,7 @@ public class AppController {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		} else {
-			return "redirect:/list";
+			return "redirect:/myprojects";
 		}
 	}
 

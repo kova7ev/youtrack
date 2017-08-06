@@ -3,6 +3,7 @@
 <%@ page isELIgnored="false"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 
@@ -59,29 +60,29 @@
 				</div>
 			</div>
 
-			<div class="row">
+			<div class="row" style="visibility: collapse;">
 				<div class="form-group col-md-12">
-					<label class="col-md-3 control-lable" for="activityProject">Projects</label>
-					<div class="col-md-7">
-						<form:select path="activityProject" items="${projects}"
-							multiple="true" itemValue="id" itemLabel="name"
-							class="form-control input-sm" />
-						<div class="has-error">
-							<form:errors path="activityProject" class="help-inline" />
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="form-group col-md-12">
-					<label class="col-md-3 control-lable" for="activityUser">Users</label>
+					<label class="col-md-3 control-lable" for="activityUser">User</label>
 					<div class="col-md-7">
 						<form:select path="activityUser" items="${users}"
 							multiple="true" itemValue="id" itemLabel="ssoId"
 							class="form-control input-sm" />
 						<div class="has-error">
 							<form:errors path="activityUser" class="help-inline" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group col-md-12">
+					<label class="col-md-3 control-lable" for="activityProject">Projects</label>
+					<div class="col-md-7">
+						<form:select path="activityProject" items="${userprojects}"
+							multiple="true" itemValue="id" itemLabel="name"
+							class="form-control input-sm" />
+						<div class="has-error">
+							<form:errors path="activityProject" class="help-inline" />
 						</div>
 					</div>
 				</div>

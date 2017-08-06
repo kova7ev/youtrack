@@ -8,6 +8,8 @@ public interface ActivityDao {
 
 	List<Activity> findAll();
 	
+	List<Activity> findByUser(Integer id);
+	
 	Activity findById(int id);
 	
 	void save(Activity project);

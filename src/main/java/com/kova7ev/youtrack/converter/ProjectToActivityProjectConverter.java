@@ -7,7 +7,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.kova7ev.youtrack.model.Project;
-import com.kova7ev.youtrack.model.User;
 import com.kova7ev.youtrack.service.ProjectService;
 
 /**

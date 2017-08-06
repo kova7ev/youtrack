@@ -8,7 +8,9 @@ public interface ActivityService {
 
 	Activity findById(int id);
 	
-	List<Activity> findAll();	
+	List<Activity> findAll();
+	
+	List<Activity> findByUser(Integer id);
 	
 	void saveActivity(Activity activity);
 	

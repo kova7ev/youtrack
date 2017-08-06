@@ -1,6 +1,7 @@
 package com.kova7ev.youtrack.dao;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -42,6 +43,23 @@ public class ActivityDaoImpl extends AbstractDao<Integer, Activity> implements A
 		return activities;
 	}
 
+	public List<Activity> findByUser(Integer id) {
+		Criteria criteria = createEntityCriteria().addOrder(Order.asc("date"));
+		//criteria.add(Restrictions.eq("activityUser", id));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);// To avoid duplicates.
+		List<Activity> activities = (List<Activity>) criteria.list();
+
+		for (Activity activity : activities) {
+			Hibernate.initialize(activity.getActivityUser());
+			Hibernate.initialize(activity.getActivityProject());
+		}
+
+		return activities
+				.stream()
+				.filter(p -> p.getActivityUser().getId() == id)
+				.collect(Collectors.toList());
+	}
+	
 	public void save(Activity activity) {
 		persist(activity);
 	}
