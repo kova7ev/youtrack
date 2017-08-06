@@ -7,10 +7,11 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.kova7ev.youtrack.model.Project;
+import com.kova7ev.youtrack.model.User;
 import com.kova7ev.youtrack.service.ProjectService;
 
 /**
- * A converter class used in views to map id's to actual userProfile objects.
+ * A converter class used in views to map id's to actual userProject objects.
  */
 @Component
 public class ProjectToActivityProjectConverter implements Converter<Object, Project>{
@@ -30,5 +31,4 @@ public class ProjectToActivityProjectConverter implements Converter<Object, Proj
 		logger.info("Profile : {}", project);
 		return project;
 	}
-	
 }

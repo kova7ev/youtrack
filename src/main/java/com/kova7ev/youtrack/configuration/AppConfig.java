@@ -18,6 +18,8 @@ import org.springframework.web.servlet.view.JstlView;
 import com.kova7ev.youtrack.converter.ProjectToActivityProjectConverter;
 import com.kova7ev.youtrack.converter.RoleToUserProfileConverter;
 import com.kova7ev.youtrack.converter.UserToActivityUserConverter;
+import com.kova7ev.youtrack.model.Project;
+import com.kova7ev.youtrack.model.User;
 
 
 @Configuration
@@ -64,10 +66,9 @@ public class AppConfig extends WebMvcConfigurerAdapter{
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(roleToUserProfileConverter);
-        registry.addConverter(projectToActivityProjectConverter);
-        registry.addConverter(userToActivityUserConverter);
+        registry.addConverter(String.class, Project.class, projectToActivityProjectConverter);
+        registry.addConverter(String.class, User.class, userToActivityUserConverter);
     }
-	
 
     /**
      * Configure MessageSource to lookup any validation/error message in internationalized property files

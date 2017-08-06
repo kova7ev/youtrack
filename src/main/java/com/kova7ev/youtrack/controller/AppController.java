@@ -2,8 +2,10 @@ package com.kova7ev.youtrack.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -175,6 +177,58 @@ public class AppController {
 	}
 
 	/**
+	 * This method will list all user projects.
+	 */
+	@RequestMapping(value = { "/userprojects" }, method = RequestMethod.GET)
+	public String listUserProjects(ModelMap model) {
+
+		List<User> users = userService.findAllUsers();
+		model.addAttribute("userprojects", users);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "userprojects";
+	}
+
+	/**
+	 * This method will provide the medium to update an existing user projects.
+	 */
+	@RequestMapping(value = { "/edit-user-projects-{id}" }, method = RequestMethod.GET)
+	public String editUserProjects(@PathVariable int id, ModelMap model) {
+		User user = userService.findById(id);
+		model.addAttribute("user", user);
+		model.addAttribute("edit", true);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "edituserprojects";
+	}
+
+	/**
+	 * This method will be	 called on form submission, handling POST request for
+	 * updating activity in database. It also validates the user input
+	 */
+	@RequestMapping(value = { "/edit-user-projects-{id}" }, method = RequestMethod.POST)
+	public String updateUserProjects(@Valid User user, BindingResult result, ModelMap model, @PathVariable int id) {
+
+		if (result.hasErrors()) {
+			return "edituserprojects";
+		}
+
+		userService.updateUser(user);
+
+//		model.addAttribute("success", "Activity: id=" + activity.getId() + ", comment= " + activity.getComment()
+//				+ ", hours= " + activity.getHours() + " updated successfully");
+//		model.addAttribute("loggedinuser", getPrincipal());
+		return "edituserprojects";
+	}
+
+//	/**
+//	 * This method will delete an activity by it's ID value.
+//	 */
+//	@RequestMapping(value = { "/delete-activity-{id}" }, method = RequestMethod.GET)
+//	public String deleteActivity(@PathVariable int id) {
+//		activityService.deleteActivityById(id);
+//		return "redirect:/activities";
+//	}
+
+	/**
 	 * This method will list all activities.
 	 */
 	@RequestMapping(value = { "/activities" }, method = RequestMethod.GET)
@@ -260,6 +314,7 @@ public class AppController {
 		return "redirect:/activities";
 	}
 
+	
 	/**
 	 * This method will list all activities.
 	 */
@@ -273,7 +328,7 @@ public class AppController {
 	}
 
 	/**
-	 * This method will provide the medium to add a new user.
+	 * This method will provide the medium to add a new project.
 	 */
 	@RequestMapping(value = { "/newproject" }, method = RequestMethod.GET)
 	public String newProject(ModelMap model) {

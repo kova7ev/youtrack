@@ -71,6 +71,5 @@ public class UserServiceImpl implements UserService{
 	public boolean isUserSSOUnique(Integer id, String sso) {
 		User user = findBySSO(sso);
 		return ( user == null || ((id != null) && (user.getId() == id)));
-	}
-	
+	}	
 }

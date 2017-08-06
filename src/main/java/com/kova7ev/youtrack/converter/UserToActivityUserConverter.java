@@ -30,5 +30,4 @@ public class UserToActivityUserConverter implements Converter<Object, User>{
 		logger.info("User : {}", user);
 		return user;
 	}
-	
 }

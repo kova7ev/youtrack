@@ -23,6 +23,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		User user = getByKey(id);
 		if(user!=null){
 			Hibernate.initialize(user.getUserProfiles());
+			Hibernate.initialize(user.getUserProjects());
 		}
 		return user;
 	}
@@ -34,6 +35,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		User user = (User)crit.uniqueResult();
 		if(user!=null){
 			Hibernate.initialize(user.getUserProfiles());
+			Hibernate.initialize(user.getUserProjects());
 		}
 		return user;
 	}
@@ -45,6 +47,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		User user = (User)crit.uniqueResult();
 		if(user!=null){
 			Hibernate.initialize(user.getUserProfiles());
+			Hibernate.initialize(user.getUserProjects());
 		}
 		return user;
 	}
@@ -57,10 +60,11 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		
 		// No need to fetch userProfiles since we are not showing them on list page. Let them lazy load. 
 		// Uncomment below lines for eagerly fetching of userProfiles if you want.
-		/*
+		
 		for(User user : users){
 			Hibernate.initialize(user.getUserProfiles());
-		}*/
+			Hibernate.initialize(user.getUserProjects());
+		}
 		return users;
 	}
 

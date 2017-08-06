@@ -18,38 +18,43 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name="APP_USER")
-public class User implements Serializable{
+@Table(name = "APP_USER")
+public class User implements Serializable {
 
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotEmpty
-	@Column(name="SSO_ID", unique=true, nullable=false)
+	@Column(name = "SSO_ID", unique = true, nullable = false)
 	private String ssoId;
-	
+
 	@NotEmpty
-	@Column(name="PASSWORD", nullable=false)
+	@Column(name = "PASSWORD", nullable = false)
 	private String password;
-		
+
 	@NotEmpty
-	@Column(name="FIRST_NAME", nullable=false)
+	@Column(name = "FIRST_NAME", nullable = false)
 	private String firstName;
 
 	@NotEmpty
-	@Column(name="LAST_NAME", nullable=false)
+	@Column(name = "LAST_NAME", nullable = false)
 	private String lastName;
 
 	@NotEmpty
-	@Column(name="EMAIL", nullable=false)
+	@Column(name = "EMAIL", nullable = false)
 	private String email;
 
 	@NotEmpty
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "APP_USER_USER_PROFILE", 
-             joinColumns = { @JoinColumn(name = "USER_ID") }, 
-             inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
+	@JoinTable(name = "APP_USER_USER_PROFILE", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = {
+			@JoinColumn(name = "USER_PROFILE_ID") })
 	private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "APP_USER_USER_PROJECT", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = {
+			@JoinColumn(name = "USER_PROJECT_ID") })
+	private Set<Project> userProjects = new HashSet<Project>();
 
 	public Integer getId() {
 		return id;
@@ -107,6 +112,14 @@ public class User implements Serializable{
 		this.userProfiles = userProfiles;
 	}
 
+	public Set<Project> getUserProjects() {
+		return userProjects;
+	}
+
+	public void setUserProjects(Set<Project> userProjects) {
+		this.userProjects = userProjects;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -139,16 +152,12 @@ public class User implements Serializable{
 	}
 
 	/*
-	 * DO-NOT-INCLUDE passwords in toString function.
-	 * It is done here just for convenience purpose.
+	 * DO-NOT-INCLUDE passwords in toString function. It is done here just for
+	 * convenience purpose.
 	 */
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password
-				+ ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", email=" + email + "]";
+		return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", email=" + email + "]";
 	}
-
-
-	
 }
