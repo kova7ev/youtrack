@@ -1,0 +1,26 @@
+package com.kova7ev.youtrack.service;
+
+import java.util.List;
+
+import com.kova7ev.youtrack.model.User;
+
+
+public interface UserService {
+	
+	User findById(int id);
+	
+	User findBySSO(String sso);
+	
+	User findByName(String name);
+	
+	void saveUser(User user);
+	
+	void updateUser(User user);
+	
+	void deleteUserBySSO(String sso);
+
+	List<User> findAllUsers(); 
+	
+	boolean isUserSSOUnique(Integer id, String sso);
+
+}
